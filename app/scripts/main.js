@@ -15,8 +15,8 @@
 			lat: null,
 			lng: null,			
 			lang: 'en',
-			success: function() {},
-			error: function(message) {}
+			//success: function() {},
+			//error: function(message) {}
 		}
 
 		
