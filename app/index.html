@@ -12,40 +12,20 @@
     <link rel="stylesheet" href="styles/main.css">    
   </head>
   <body>
-    <div class="weather-widget-wrap">
-      <div class="weather-date-place-wrap">
-        <p class="weather-day"></p>
-        <p class="weather-date-wrap">
-          <span class="weather-date"></span>
-          <span class="weather-month"></span>
-          <span class="weather-year"></span>
-        </p>
-        <p class="weather-place"></p>
-      </div>
-      <div class="weather-info-wrap">
-        <div class="weather-info-img-wrap">
-          <img src="" alt="" class="weather-icon">
-          <p class="weather-info-descr"></p>
-        </div>
-
-        <div class="weather-temp-wind-wrap">
-          <a class="metric-switcher" href="#"></a>
-          <p class="weather-temp"></p>
-          <p class="weather-wind"></p>
-        </div>  
-      </div>
-    </div>
+    <div class="root"></div>
     
    
-    
+    <div class="bla"></div>
     <script src="/bower_components/jquery/dist/jquery.js"></script>    
+    <script src="scripts/jquery.autocomplete.js"></script>
     <script src="scripts/main.js"></script>  
     <script>
-      $('body').openWeather({
-        units: 'c',
-        city: 'Kiev',
-        //lang: 'ru'
-      });
+      
+      $('.bla').myWeather({
+        position: {
+          city: 'Kiev'
+        }
+      })
     </script>
   </body>
 </html>

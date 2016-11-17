@@ -35,6 +35,7 @@ p{
   }
   .weather-place{
     font-weight: bold;
+    cursor: pointer;
   }
 }
 .weather-info-wrap{
@@ -94,4 +95,13 @@ p{
       vertical-align: middle;
     }
   }
+}
+.get-city{
+  border: none;
+  outline: none;
+  background: transparent;
+  text-align: center;
+  color: #fff;
+  font: 14px/1 $Titillium;
+  width: 100%;
 }
