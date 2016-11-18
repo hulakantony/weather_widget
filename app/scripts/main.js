@@ -35,30 +35,29 @@
 			lng: null		
 			}				
 		};	
-	function Plugin(element, options){	
+	function Plugin(element, options){		
 		this.element = element;			
-		this.settings = $.extend({}, defaults, options, this.element);		
+		this.settings = $.extend({}, defaults, options);		
 		this.init();
 	}
-	var self = this;
-	console.log(self)
-	$.fn[ pluginName ] = function( options ) {
-		var self = this;
-		console.log(self)
-		return self.each( function() {
-			if ( !$.data( self, "plugin_" + pluginName ) ) {
-				$.data( self, "plugin_" +
+	//var self = Plugin;
+	//console.log(self)
+	$.fn[ pluginName ] = function( options ) {		
+		return this.each( function() {			
+			console.log(!$.data( this, "plugin_" + pluginName ))
+			if ( !$.data( this, "plugin_" + pluginName ) ) {
+				$.data( this, "plugin_" +
 					pluginName, new Plugin( this, options ) );
 			}
 		} );
 	};
 	$.extend(Plugin.prototype, {
-		init: function(){			
+		init(){			
 			this.execute();
 			apiURL = 'http://api.openweathermap.org/data/2.5/weather?lang=en';	
 		},
 
-		execute: function(){					
+		execute(){					
 			var set = this.settings;
 			var def = set.position;										
 			if(!def.city){
@@ -77,41 +76,31 @@
 				this.run.bind(this)();
 			}
 		},
-		getCurrentLocation: function(){
-			var location = 'http://ip-api.com/json';			
-
+		getCurrentLocation(){
+			var location = 'http://ip-api.com/json';
 			fetch(location).then(data => {
 				return data.json();
-			}
-			).then(we => {						
+			}).then(we => {						
 				apiURL += '&lat='+ we.lat +'&lon='+ we.lon +'&appid='+ KEY;
-				this.run.bind(this)();
+				this.run();
 			})				
 		},
-
-		run: function (){
+		run(){
 			var self = this;
 			fetch(apiURL).then((data)=>{				
 				return data.json();
 			}).then((we)=>{
-
 				self.renderElements.bind(this)(self.parseData.bind(this)(we));
 			});			
 		},		
-		parseData: function(data){
+		parseData(data){
 	      if (data.cod == 404){
 	        return null;
-	      }
-	     //console.log(data.name);
-	      var u ;
-	      if(this.settings){
-	      	u = this.settings.position.units;
-	      } else {
-	      	u = 'c';
-	      }
+	      }	    
+	      var u = this.settings.position.units;	      
 	      var parsedData = {};
 	      var KELVIN = 273;	 	      
-	      if(!u || u === 'c'){
+	      if(u === 'c'){
 	      	parsedData.temp = (Math.round(data.main.temp) - KELVIN) + '°C';
 	      } else {
 	      	parsedData.temp = ((Math.round(data.main.temp) - KELVIN) * 1.8 + 32).toFixed(0) + '°F';
@@ -121,26 +110,10 @@
 	      parsedData.place = data.name + ', ' + data.sys.country;
 	      parsedData.wind = ~~data.wind.speed + 'mph';
 	      return parsedData;
-	    },
-	    getElement: function(){
-	    	var oldElement;
-	    	if (oldElement) {
-	    		oldElement =  $(oldElement)
-
-	    	}else{
-	    		oldElement = $(this.element);
-	    	}
-	    	return oldElement;
-	    },
-	    renderElements: function(data){	 
-	    	 var el = $(this.element); 
-	    	 console.log('1------>',this.getElement()) 	
-	    	 	//debugger
-	    	$(this.element).html(widgetHtml);
-	    		console.log('2------>',$(this.element)) 
-	    		if(!$(this.element).html()){
-				var el = $('.weather-widget-wrap').has('.get-city');	    			
-	    		}	    		
+	    },	   
+	    renderElements (data){	 
+	    	var el = $(this.element);	    	 	
+	    	el.html(widgetHtml); 	    		 		
 	    	el.find('.weather-temp').html(data.temp);
 	    	el.find('.weather-info-descr').text(data.descr);
 	    	el.find('.weather-place').text(data.place);
@@ -151,10 +124,8 @@
 			el.find('.weather-year').html(formatDate().year);
 			var iconURL = 'http://openweathermap.org/img/w/'+data.icon+'.png';						
 			el.find('.weather-icon').attr('src', iconURL);
-			if(this.settings && this.settings.position.units === 'c'){
-				el.find('.metric-switcher').html('F');
-			} else if(!this.settings) {
-				el.find('.metric-switcher').html('F');
+			if(this.settings.position.units === 'c'){
+				el.find('.metric-switcher').html('F');			
 			} else {
 				el.find('.metric-switcher').html('C');
 			}
@@ -173,15 +144,14 @@
 				}
 			});
 			el.find(".weather-place").on("click", this.setCity);			
-	    },
-	    getNewWeather: function(city){	    	
+	    },	    
+	    getNewWeather(city){	       	
 	    	apiURL =  'http://api.openweathermap.org/data/2.5/weather?lang=en' + '&q='+ city + '&appid=' + KEY;
-	    	Plugin.prototype.run();
-
+	    	this.run();
 	    },
-	    setCity: function () {	 
-	     $(this).empty().append(cityInput);
-		 $(this).find('.get-city').focus().autocomplete({
+	    setCity=()=> {		    	
+	     $(this.element).find('.weather-place').empty().append(cityInput);
+		 $(this.element).find('.get-city').focus().autocomplete({
 		        serviceUrl: 'http://gd.geobytes.com/AutoCompleteCity',
 		        minChars: 3,
 		        ajaxSettings: {
@@ -198,13 +168,11 @@
 		                })
 		            };
 		        }
-		    });	
-		    var func = this.getNewWeather	    
-		   $('.get-city').keypress(function(e) {		   	
-				if (e.which == 13) {
-
-					var city = $(".get-city").val().split(',')[0];						
-					Plugin.prototype.getNewWeather.call(this, city);
+		    });		    	    
+		   $('.get-city').keypress((e) => {		   	
+				if (e.which == 13) {					
+					var city = $(".get-city").val().split(',')[0];											
+					this.getNewWeather(city);
 					// Plugin.prototype.run();				
 					//this.run();
 					//localStorage.setItem($(that).index()+"isSaveCity", $(that).find(".save-city").prop("checked"));
@@ -214,12 +182,9 @@
 						
 				}
 			}); 
-	    }
-	    
+	    }    
 
-	});
-	
-    
+	});   
 		
 	function formatDate(){
 		var now = new Date();
