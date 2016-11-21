@@ -29,7 +29,7 @@
         utils = (function () {
             return {
                 escapeRegExChars: function (value) {
-                    return value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+                    return value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
                 },
                 createNode: function (containerClass) {
                     var div = document.createElement('div');
@@ -592,7 +592,7 @@
                     var result;
                     that.currentRequest = null;
                     result = options.transformResult(data, q);
-            console.log("in plugin", result);
+            console.log('in plugin', result);
                     that.processResponse(result, q, cacheKey);
                     options.onSearchComplete.call(that.element, q, result.suggestions);
                 }).fail(function (jqXHR, textStatus, errorThrown) {
