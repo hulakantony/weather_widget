@@ -81,12 +81,9 @@
 		getState(key) {
       		return JSON.parse(localStorage.getItem(key));
     	},
-    	renewWidget(){
-    		var self = this;
-    		//console.log(this)
-    		console.log('----->',self.settings.lang)
+    	renewWidget(){    		
     		apiURL += 'lang=' +self.settings.lang + '&q='+self.settings.position.city+ '&appid='+ KEY;
-    		self.run()
+    		this.run()
     	},
 		execute(){					
 			var set = this.settings;
@@ -108,8 +105,7 @@
 			}
 		},
 		getCurrentLocation(){
-			var location = 'http://ip-api.com/json';
-			var self = this;
+			var location = 'http://ip-api.com/json';			
 			if($(this.element).find('.localization-switcher').html() === 'RU'){
 				fetch(location).then(data => {
 					return data.json();
@@ -127,15 +123,13 @@
 				})	
 				apiURL = 'http://api.openweathermap.org/data/2.5/weather?';	
 			}
-			this.settings.position.city = $(self.element).find('.weather-place').html().split(',')[0];	
-			console.log(this.settings.position.city)	
+			this.settings.position.city = $(this.element).find('.weather-place').html().split(',')[0];			
 		},
-		run(){
-			var self = this;
+		run(){			
 			fetch(apiURL).then((data)=>{				
 				return data.json();
 			}).then((we)=>{
-				self.renderElements.bind(this)(self.parseData.bind(this)(we));
+				this.renderElements(this.parseData.bind(this)(we));
 			});	
 			apiURL = 'http://api.openweathermap.org/data/2.5/weather?';		
 		},		
@@ -186,7 +180,7 @@
 					e.preventDefault();
 					this.getCurrentLocation();
 				});
-				el.find('.localization-switcher').click(function(e){
+				el.find('.localization-switcher').click(function(e) {					
 					e.preventDefault();
 					if($(this).html() === 'RU'){
 						apiURL += 'lang=ru&q='+self.settings.position.city+ '&appid='+ KEY;
@@ -228,7 +222,7 @@
 			el.find('.weather-place').on('click', this.setCity.bind(this));	
 			el.find('.save-city').click(this.changeDetectLoc.bind(this));
 				
-			this.settings.position.city = $(self.element).find('.weather-place').html().split(',')[0];			
+			this.settings.position.city = $(this.element).find('.weather-place').html().split(',')[0];			
 	    },	    
 	    getNewWeather(city){	       	
 	    	apiURL =  'http://api.openweathermap.org/data/2.5/weather?lang=en' + '&q='+ city + '&appid=' + KEY;
@@ -261,7 +255,7 @@
 				if (e.which == 13) {					
 					var city = $('.get-city').val().split(',')[0];											
 					this.getNewWeather(city);					
-					this.settings.position.city = city +'';
+					this.settings.position.city = city;
 					this.settings.lang = 'en';						
 				}
 			});	
